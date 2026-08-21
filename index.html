@@ -23,11 +23,135 @@
     <style>
         /* Base Styles & Variables */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        /* ... rest of your CSS (unchanged) ... */
-        :root { /* existing variables */ }
-        [data-theme="light"] { /* ... */ }
+        
+        :root {
+            --bg-color: #050505;
+            --surface-color: #121212;
+            --surface-hover: #1a1a1a;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --text-secondary: #cccccc;
+            --border-soft: rgba(255,255,255,0.1);
+            --border-strong: rgba(255,255,255,0.3);
+            --surface-tint: rgba(255,255,255,0.02);
+            --header-bg: rgba(5, 5, 5, 0.85);
+            --link-color: #4facfe;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f4f4f6;
+            --surface-color: #ffffff;
+            --surface-hover: #ececef;
+            --text-main: #111111;
+            --text-muted: #5a5a5a;
+            --text-secondary: #333333;
+            --border-soft: rgba(0,0,0,0.1);
+            --border-strong: rgba(0,0,0,0.28);
+            --surface-tint: rgba(0,0,0,0.03);
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --link-color: #1266c2;
+        }
+
         ::-webkit-scrollbar { width: 10px; }
-        /* (the long CSS you already had remains here unchanged) */
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: #555; border-radius: 5px; }
+
+        body {
+            font-family: 'Inter', sans-serif; margin: 0; padding: 0;
+            background-color: var(--bg-color); color: var(--text-main); line-height: 1.6;
+            overflow-x: hidden; transition: var(--transition);
+        }
+
+        /* Scroll Animation Class */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Navigation */
+        header { 
+            position: fixed; top: 0; width: 100%; padding: 1rem 5%; 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: var(--header-bg); backdrop-filter: blur(15px); z-index: 1000;
+            box-sizing: border-box; border-bottom: 1px solid var(--border-soft);
+        }
+        .brand-container { display: flex; align-items: center; gap: 12px; }
+        .circle-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: #fff; border: 2px solid var(--border-soft); }
+        .logo-text { font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+        .header-right { display: flex; align-items: center; gap: 2.5rem; }
+        nav { display: flex; gap: 2.5rem; }
+        nav button { background: none; border: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: var(--transition); position: relative; }
+        nav button::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background: var(--text-main); transition: width 0.3s; }
+        nav button:hover, nav button.active-btn { color: var(--text-main); }
+        nav button.active-btn::after { width: 100%; }
+        
+        .theme-toggle-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-soft); background: transparent; color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
+        .theme-toggle-btn svg { width: 18px; height: 18px; }
+        .theme-toggle-btn .icon-sun { display: none; }
+        [data-theme="light"] .theme-toggle-btn .icon-moon { display: none; }
+        [data-theme="light"] .theme-toggle-btn .icon-sun { display: block; }
+
+        /* Layout */
+        .page-content { display: none; padding-top: 110px; min-height: 100vh; }
+        .active-page { display: block; animation: fadeInPage 0.6s forwards; }
+        @keyframes fadeInPage { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 5%; }
+        h1 { font-size: clamp(3rem, 5vw, 5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; letter-spacing: -1.5px; }
+        h2 { font-size: 2.5rem; font-weight: 300; margin-bottom: 3rem; border-bottom: 1px solid var(--border-soft); padding-bottom: 1rem; }
+        h3 { font-size: 1.4rem; margin-bottom: 1rem; font-weight: 600; }
+        h4 { font-size: 1.1rem; margin-top: 0; font-weight: 600; }
+        p, ul { color: var(--text-muted); font-size: 1.1rem; font-weight: 300; }
+        ul { padding-left: 1.5rem; }
+        
+        /* Hero */
+        .hero { height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 5%; background: var(--surface-color); margin-bottom: 2rem; }
+        .motto { font-size: 1.5rem; font-style: italic; color: var(--text-secondary); margin-bottom: 2rem; }
+
+        /* Grids & Cards */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; margin-bottom: 5rem; }
+        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+        .card { background: var(--surface-color); padding: 3rem; border: 1px solid var(--border-soft); transition: var(--transition); display: flex; flex-direction: column; justify-content: space-between; }
+        .card:hover { transform: translateY(-5px); border-color: var(--border-strong); background: var(--surface-hover); }
+        .full-width { grid-column: 1 / -1; }
+        
+        /* Elements */
+        .placeholder-img { width: 100%; height: 250px; background: var(--surface-tint); border: 1px dashed var(--border-strong); display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; }
+        .profile-img { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 1.5rem auto; display: block; object-fit: cover; background: var(--surface-tint); border: 2px solid var(--border-soft); }
+        .action-btn { background: transparent; color: var(--text-main); padding: 14px 28px; border: 1px solid var(--border-strong); cursor: pointer; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; transition: var(--transition); display: inline-block; text-align: center; text-decoration: none; }
+        .action-btn:hover { background: var(--text-main); color: var(--bg-color); }
+        
+        /* Search Bar */
+        .search-container { margin-bottom: 2rem; }
+        .search-input { width: 100%; padding: 15px; font-size: 1.1rem; background: var(--surface-color); border: 1px solid var(--border-strong); color: var(--text-main); border-radius: 4px; }
+        .search-input:focus { outline: none; border-color: var(--link-color); }
+
+        /* Carousel Styles */
+        .carousel { position: relative; width: 100%; max-width: 900px; margin: 0 auto 4rem auto; overflow: hidden; border-radius: 8px; border: 1px solid var(--border-soft); background: var(--surface-color); }
+        .carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
+        .carousel-slide { min-width: 100%; box-sizing: border-box; }
+        .carousel-slide img { width: 100%; height: 500px; object-fit: cover; display: block; cursor: zoom-in; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: white; border: none; font-size: 1.5rem; z-index: 10; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.3s; }
+        .carousel-btn:hover { background: var(--link-color); }
+        .carousel-btn.prev { left: 15px; }
+        .carousel-btn.next { right: 15px; }
+        .carousel-indicators { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10; }
+        .indicator { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: var(--transition); border: 1px solid rgba(0,0,0,0.2); }
+        .indicator.active { background: #ffffff; transform: scale(1.2); }
+
+        /* Modal Overlay */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; padding: 2rem; box-sizing: border-box; }
+        .modal-content { background: var(--surface-color); border: 1px solid var(--border-strong); width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 3rem; position: relative; border-radius: 8px; animation: fadeInPage 0.3s forwards; }
+        .close-modal { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; color: var(--text-main); font-size: 2rem; cursor: pointer; line-height: 1; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 1rem; gap: 1rem; }
+            nav { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+            .header-right { position: absolute; top: 1rem; right: 1rem; }
+            .grid-container { grid-template-columns: 1fr !important; }
+            .card { padding: 1.5rem; }
+            .modal-content { padding: 1.5rem; }
+            .carousel-slide img { height: 300px; }
+        }
     </style>
 </head>
 <body>
@@ -35,8 +159,8 @@
     <!-- Header -->
     <header>
         <div class="brand-container">
-            <img src="assets/blk_two_tailed.jpg" alt="Blk Two-tailed logo" class="circle-logo" loading="lazy">
-            <img src="assets/iskatistics_logo.jpg" alt="Iskatistics logo" class="circle-logo" loading="lazy">
+            <img src="assets/blk_two_tailed.jpg" alt="Logo" class="circle-logo" loading="lazy">
+            <img src="assets/iskatistics_logo.jpg" alt="Logo" class="circle-logo" loading="lazy">
             <div class="logo-text">BS Statistics</div>
         </div>
         <nav id="main-nav">
@@ -139,25 +263,25 @@
             <div class="grid-container grid-4 reveal">
                 <!-- Faculty Templates -->
                 <div class="card" style="padding: 2rem; text-align: center;">
-                    <img src="assets/profile_placeholder.jpg" alt="Faculty" class="profile-img" loading="lazy">
+                    <img src="assets/placeholder.jpg" alt="Faculty" class="profile-img" loading="lazy">
                     <h4 style="margin-bottom: 0.5rem;">Mr. Peter John B. Aranas</h4>
                     <p style="font-size: 0.9rem; margin-bottom: 1rem;"><strong>Specialty:</strong> Machine Learning & Data Mining</p>
                     <p style="font-size: 0.85rem; color: var(--text-secondary);"><strong>Subjects:</strong> Statistical Computing, Multivariate Analysis</p>
                 </div>
                 <div class="card" style="padding: 2rem; text-align: center;">
-                    <img src="assets/profile_placeholder.jpg" alt="Faculty" class="profile-img" loading="lazy">
+                    <img src="assets/placeholder.jpg" alt="Faculty" class="profile-img" loading="lazy">
                     <h4 style="margin-bottom: 0.5rem;">Mr. Laurence P. Usona</h4>
                     <p style="font-size: 0.9rem; margin-bottom: 1rem;"><strong>Specialty:</strong> Time Series & Spatial Analysis</p>
                     <p style="font-size: 0.85rem; color: var(--text-secondary);"><strong>Subjects:</strong> Time Series Analysis, Probability</p>
                 </div>
                 <div class="card" style="padding: 2rem; text-align: center;">
-                    <img src="assets/profile_placeholder.jpg" alt="Faculty" class="profile-img" loading="lazy">
+                    <img src="assets/placeholder.jpg" alt="Faculty" class="profile-img" loading="lazy">
                     <h4 style="margin-bottom: 0.5rem;">Ms. Katrina D. Elizon</h4>
                     <p style="font-size: 0.9rem; margin-bottom: 1rem;"><strong>Specialty:</strong> Regression Modeling</p>
                     <p style="font-size: 0.85rem; color: var(--text-secondary);"><strong>Subjects:</strong> Linear Models, Non-Parametric Stats</p>
                 </div>
                 <div class="card" style="padding: 2rem; text-align: center;">
-                    <img src="assets/profile_placeholder.jpg" alt="Faculty" class="profile-img" loading="lazy">
+                    <img src="assets/placeholder.jpg" alt="Faculty" class="profile-img" loading="lazy">
                     <h4 style="margin-bottom: 0.5rem;">Mr. John Philip O. Echevarria</h4>
                     <p style="font-size: 0.9rem; margin-bottom: 1rem;"><strong>Specialty:</strong> Actuarial Science</p>
                     <p style="font-size: 0.85rem; color: var(--text-secondary);"><strong>Subjects:</strong> Mathematical Statistics, Theory of Interest</p>
@@ -168,14 +292,14 @@
             <h3 class="reveal" style="margin-top: 4rem;">Batch Graduates</h3>
             <div class="grid-container grid-4 reveal">
                 <div class="card" style="padding: 1.5rem; text-align: center;">
-                    <img src="assets/profile_placeholder.jpg" alt="Graduate" class="profile-img" loading="lazy">
+                    <img src="assets/placeholder.jpg" alt="Graduate" class="profile-img" loading="lazy">
                     <h4 style="margin-bottom: 0.5rem;">[Student Name]</h4>
                     <p style="font-size: 0.85rem; color: var(--link-color); font-weight: bold;">Class of 2024</p>
                     <p style="font-size: 0.9rem; font-style: italic;">"[Insert Student Motto/Quote here]"</p>
                     <p style="font-size: 0.8rem; margin-top: 1rem; border-top: 1px solid var(--border-soft); padding-top: 1rem;"><strong>Awards:</strong> Magna Cum Laude, Best Thesis</p>
                 </div>
                 <div class="card" style="padding: 1.5rem; text-align: center;">
-                    <img src="assets/profile_placeholder.jpg" alt="Graduate" class="profile-img" loading="lazy">
+                    <img src="assets/placeholder.jpg" alt="Graduate" class="profile-img" loading="lazy">
                     <h4 style="margin-bottom: 0.5rem;">[Student Name]</h4>
                     <p style="font-size: 0.85rem; color: var(--link-color); font-weight: bold;">Class of 2024</p>
                     <p style="font-size: 0.9rem; font-style: italic;">"[Insert Student Motto/Quote here]"</p>
@@ -225,14 +349,57 @@
     <div id="papers" class="page-content">
         <div class="container">
             <h2 class="reveal">Academic Papers & Presentations</h2>
-            <!-- (unchanged rendering code) -->
+            
+            <!-- Featured Researches -->
             <div class="card full-width reveal" style="margin-bottom: 4rem; padding: 3rem; background: var(--surface-tint);">
                 <h3 style="font-size: 2rem; margin-bottom: 1rem;">Top 4 Featured Researches</h3>
                 <div class="grid-container grid-4" style="margin-bottom: 0; gap: 1.5rem;">
-                    <!-- content unchanged -->
+                    <div class="card" style="padding: 1.5rem;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--link-color); font-weight: 800; display: block; margin-bottom: 0.8rem;">Machine Learning</span>
+                        <h4 style="line-height: 1.4;">Clustering Disaster Risk Reduction and Management Capacity Across Philippine LGUs...</h4>
+                    </div>
+                    <div class="card" style="padding: 1.5rem;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--link-color); font-weight: 800; display: block; margin-bottom: 0.8rem;">Latent Variable</span>
+                        <h4 style="line-height: 1.4;">Predictors of Attitudes Toward Lesbian and Gay Men Using Partial Least Squares...</h4>
+                    </div>
+                    <div class="card" style="padding: 1.5rem;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--link-color); font-weight: 800; display: block; margin-bottom: 0.8rem;">Regression Modeling</span>
+                        <h4 style="line-height: 1.4;">Sweat and Threat: A Multi-City Analysis of Temperature Effects on Mortality...</h4>
+                    </div>
+                    <div class="card" style="padding: 1.5rem;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--link-color); font-weight: 800; display: block; margin-bottom: 0.8rem;">Time Series & Spatial</span>
+                        <h4 style="line-height: 1.4;">Spatial, Temporal, and Spatio-temporal Analysis of Theft-related Crimes in MRT-3...</h4>
+                    </div>
                 </div>
             </div>
-            <!-- rest is unchanged -->
+
+            <!-- Resources & Guidelines -->
+            <h3 class="reveal">Thesis Resources & Guidelines</h3>
+            <div class="grid-container grid-4 reveal" style="margin-bottom: 4rem;">
+                <div class="card" style="padding: 1.5rem; text-align: center; cursor: pointer;" onclick="openModal('Thesis Guidelines', 'Detailed manual covering formatting, margins, citation styles, and required chapters for PUP BS Statistics.')">
+                    <h4>University Thesis Guidelines</h4>
+                </div>
+                <div class="card" style="padding: 1.5rem; text-align: center; cursor: pointer;" onclick="openModal('Ethics Procedures', 'Steps for obtaining UREB clearance and informed consent guidelines for data collection.')">
+                    <h4>Research & Ethics Procedures</h4>
+                </div>
+                <div class="card" style="padding: 1.5rem; text-align: center; cursor: pointer;" onclick="openModal('Copyright Forms', 'Downloadable templates for transferring copyright and securing intellectual property rights post-defense.')">
+                    <h4>Copyright Forms</h4>
+                </div>
+                <div class="card" style="padding: 1.5rem; text-align: center; cursor: pointer;" onclick="openModal('Defense FAQs', 'Answers to common questions regarding defense attire, panelist requirements, and grading rubrics.')">
+                    <h4>Defense FAQs</h4>
+                </div>
+            </div>
+
+            <!-- Directory & Search -->
+            <h3 class="reveal">Batch Research Directory</h3>
+            
+            <div class="search-container reveal">
+                <input type="text" id="paperSearch" class="search-input" placeholder="Search for keywords, methodologies, or researcher names..." onkeyup="filterPapers()">
+            </div>
+
+            <div class="grid-container" id="papers-directory">
+                <!-- Data loaded via JS -->
+            </div>
         </div>
     </div>
 
@@ -266,16 +433,118 @@
     </div>
 
     <script>
-        /* Theme Toggle (unchanged) */
-        function toggleTheme() { /* ... */ }
+        /* Theme Toggle */
+        function toggleTheme() {
+            const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
 
-        /* Navigation (unchanged) */
-        function showPage(pageId, btnElement) { /* ... */ }
+        /* Navigation */
+        function showPage(pageId, btnElement) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(pageId).classList.add('active-page');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-btn'));
+            btnElement.classList.add('active-btn');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-        /* Scroll Animations (unchanged) */
+        /* Scroll Animations (Intersection Observer) */
+        document.addEventListener("DOMContentLoaded", () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
 
-        /* Universal Modals and Carousel logic (unchanged) */
-        /* Research data & search injection (unchanged) */
+        /* Universal Modals */
+        function openModal(title, content) {
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = `<h2 style="margin-top:0; border:none; padding:0; margin-bottom:1rem;">${title}</h2><p style="color:var(--text-main);">${content}</p>`;
+            document.getElementById('universal-modal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('universal-modal').style.display = 'none';
+        }
+
+        /* Carousel Logic */
+        let currentSlide = 0;
+        function updateCarousel() {
+            const track = document.getElementById('carouselTrack');
+            const indicators = document.querySelectorAll('.indicator');
+            if(track) {
+                track.style.transform = `translateX(-${currentSlide * 100}%)`;
+                indicators.forEach((ind, idx) => {
+                    ind.classList.toggle('active', idx === currentSlide);
+                });
+            }
+        }
+        function moveSlide(direction) {
+            const totalSlides = document.querySelectorAll('.carousel-slide').length;
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+        // Auto-advance Carousel every 5 seconds
+        setInterval(() => { moveSlide(1); }, 5000);
+
+        /* Research Data & Search Injection */
+        const allPapers = [
+            { sec: "4-1", title: "Clustering Disaster Risk Reduction and Management Capacity Across Philippine LGUs Using Unsupervised Machine Learning Techniques", res: "Noriella Kaye R. Barrozo, Jess Christine S. Manuel, Mark Joseph M. Orciga" },
+            { sec: "4-1", title: "Forecasting Philippine Quarterly Recession Probability Using Nonlinear Tree-Based Models: Random Forest, XGBoost and LightGBM", res: "Charlene T. Amaquin, Raphael Louis Y.Costumbrado, Mariella E. Ferol" },
+            { sec: "4-1", title: "Data-Driven Weights VS. Equal Weights: A Comparative Study of the Alkire–Foster Method and Logistic Principal Component Analysis (LPCA) for Measuring the Multidimensional Poverty Index (MPI)", res: "Therezanely D. Aragon, Maryn Angela L. Atole, Eric Jhon P. Francia" },
+            { sec: "4-1", title: "The Mediating Role of Self-Efficacy Between the Learning Attitudes & Academic Performance Among PUP – College of Accountancy and Finance Students Using PLS-SEM", res: "Lawre Mar B. Baclay, Kier Gabrielle R. Cantos, Sandra Nicole B. Rodas" },
+            { sec: "4-1", title: "A Hybrid Latent Class and Machine Learning Approach to Identifying Predictors of Basic Antigen Vaccination Among Children Aged 12 – 23 Months", res: "April Joy F. Coralde, Darwin Jess M. Pablo, Anna Clarisse R. Villanueva" },
+            { sec: "4-1", title: "Resilience of Renewable VS. Fossil Fuel Energy Firms: A Multi-Event Study of Typhoon Impacts on the Stock Price Behavior of ACEN and AboitizPower", res: "John Carlo V. Briñosa, Leanne Genevieve D. Tejada, AR Keizer L. Tupaz" },
+            { sec: "4-1", title: "Landsat-Based Random Forest Analysis of Decadal Urban Land-Cover Change and Growth Trajectories in Metro Manila’s 17 LGUs, 2005-2025", res: "Hensley B. Hernandez, Roberto N. Pantino Jr., Shaina Marie M. Sabareza" },
+            { sec: "4-2", title: "Food Security, Food Consumption, and Nutritional Intake as Predictors of Nutritional Outcomes Among Children Aged 6 Months to 5 Years in the Philippines Using Supervised Machine Learning Models", res: "Jan Albert M. Caponpon, Maika Jane N. Cerujano, Anne Clarisse M. Guntang" },
+            { sec: "4-2", title: "Environmental and Socioeconomic Predictors of Climate Vulnerability in the Philippines: A Complementary Panel Regression and XGBoost Analysis", res: "Hanna Alessandra B. Arrojo, Erica Jean F. Fortu, Nkemdilim E. Mabena, Melaine Jeane G. Salariosa" },
+            { sec: "4-2", title: "Predictors of Attitudes Toward Lesbian and Gay Men Using Partial Least Squares Structural Equation Modelling", res: "Princess A. Jarito, Katrina Paula C. Ortiz, Vladimir C. Pagdonsolan" },
+            { sec: "4-2", title: "Sweat and Threat: A Multi-City Analysis of Temperature Effects on Mortality Across Philippine Climate Types Using Distributed Lag Nonlinear Models", res: "Jirah C. Giron, Arlionel V. Mendoza, Josh Liane V. Pacer" },
+            { sec: "4-2", title: "Forecasting the Purchasing Power of the Philippine Peso: An ARIMAX Approach with Structural Break and Intervention Analysis (1970–2024)", res: "Rona Mae H. Delos Santos, Sarena C. Niña, Rein Andreya M. Soriano" },
+            { sec: "4-2", title: "Modeling Occupational and Industry Placement of Employed K–12 Graduates in Quezon City Using Multinomial Logistic Regression", res: "Justine C. Badua, Nicolie B. Narce, Zyrien Jean C. Olaviaga" },
+            { sec: "4-2", title: "Macroeconomic Determinants of Life Expectancy in the Philippines: Comparative Evaluation of Penalized Regression, Bayesian, and Support Vector Regression Models", res: "Gabriel M. Martinez, Maxine Grace Q. Polintan, Janna Mae A. Villanueva" },
+            { sec: "4-2", title: "Spatial, Temporal, and Spatio-temporal Analysis of Theft-related Crimes in MRT-3 Stations", res: "Rowanie Joy N. De Jesus, Norma Angelica S. Santiago, Xylen Fides B. Simbe" },
+            { sec: "4-2", title: "Forecasting Fatal and Non-Fatal Road Accidents in Metro Manila: A Comparative Study of SARIMA and LSTM Models with Hyperparameter Importance Analysis Using Random Forest Surrogates", res: "Frensil Samantha A. Gutang, Gene Kyle P. Solano, Alfred L. Villamor" }
+        ];
+
+        function renderPapers(papersList) {
+            const container = document.getElementById('papers-directory');
+            container.innerHTML = '';
+            papersList.forEach(paper => {
+                // Formatting data for the Modal
+                const abstractContent = `<strong>Researchers:</strong> ${paper.res}<br><br>[Full abstract text will be placed here.]<br><br><div style='display:flex; gap:10px;'><div class='placeholder-img' style='height:150px;'>Poster</div><div class='placeholder-img' style='height:150px;'>Video</div></div>`;
+                
+                container.innerHTML += `
+                    <div class="card paper-card" style="padding: 2rem;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; display: block; margin-bottom: 0.8rem;">Section ${paper.sec}</span>
+                        <h3 style="font-size: 1.1rem; line-height: 1.4; margin-bottom: 1rem;">${paper.title}</h3>
+                        <p style="margin-bottom: 1.5rem; font-size: 0.95rem;"><strong>Researchers:</strong><br>${paper.res}</p>
+                        <button class="action-btn" style="text-align: center; margin-top: auto; padding: 10px;" onclick="openModal('${paper.title.replace(/'/g, "\\'")}', '${abstractContent}')">Read Abstract</button>
+                    </div>
+                `;
+            });
+        }
+
+        // Search Filter
+        function filterPapers() {
+            const query = document.getElementById('paperSearch').value.toLowerCase();
+            const filtered = allPapers.filter(p => p.title.toLowerCase().includes(query) || p.res.toLowerCase().includes(query));
+            renderPapers(filtered);
+        }
+
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPapers(allPapers);
+        });
     </script>
 </body>
 </html>
